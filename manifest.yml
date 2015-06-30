@@ -1,0 +1,8 @@
+applications:
+- disk_quota: 1024M
+  host: data-science-challenge
+  name: Data Science Challenge
+  path: .
+  domain: eu-gb.mybluemix.net
+  instances: 1
+  memory: 256M
