@@ -28,8 +28,7 @@
    		           d > 5   ? '#edf8b1' :
 		                      '#ffffd9';
 		}
-     
-     
+		
      
      	// initialize the map
 		var map = L.map('map');
@@ -38,12 +37,32 @@
 		    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 		}).addTo(map);
 		
-//		map.setView([40.7258294,-73.92028], 13);
 		map.fitBounds([
 		  [40.689750, -74.011287],
 		  [40.767151, -73.859195]
 		]);
 
+
+		// add layer control
+		function monday() {}
+		function tuesday() {}
+		function wednesday() {}
+		function thursday() {}
+		function friday() {}
+		function saturday() {}
+		function sunday() {}
+				
+		var overlayMaps = {
+		    "Monday": monday,
+		    "Tuesday": tuesday,
+		    "Wednesday": wednesday,
+		    "Thursday": thursday,
+		    "Friday": friday,
+		    "Saturday": saturday,
+		    "Sunday": sunday
+		};
+		L.control.layers(overlayMaps).addTo(map);
+    		
     		
     	// add a legend	
     	var legend = L.control({position: 'bottomright'});
@@ -67,20 +86,8 @@
 		legend.addTo(map);
 		
 		
-		// add some controls in the upper right corner
-		var controls = L.control({position: 'topright'});
-		controls.onAdd = function(map) {
-			var div = L.DomUtil.create('div', 'info legend');
-			
-			div.innerHTML = "here shallth be some controlth";
-			
-			return div;
-		};
-		controls.addTo(map);
-		
-		
-		
-	function style(feature) {
+		// style the map, highlight features
+		function style(feature) {
 			return {
 				weight: 1,
 				opacity: 1,
