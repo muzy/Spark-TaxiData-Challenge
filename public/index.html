@@ -18,6 +18,7 @@
  
      <script>
 		function getColor(d) {
+			console.log(d);
 		    return d > 20 ? '#081d58' :
 		           d > 16  ? '#253494' :
 		           d > 12  ? '#225ea8' :
@@ -94,7 +95,7 @@
 				color: '#ccc',
 				dashArray: '',
 				fillOpacity: 0.5,
-				fillColor: getColor(feature.properties.1)
+				fillColor: getColor(feature.properties['1']*100)
 			};
 		}
 
