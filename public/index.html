@@ -18,17 +18,19 @@
  
      <script>
 		function getColor(d) {
-			console.log(d);
-		    return d > 20 ? '#081d58' :
-		           d > 16  ? '#253494' :
-		           d > 12  ? '#225ea8' :
-		           d > 10  ? '#1d91c0' :
-		           d > 8   ? '#41b6c4' :
-		           d > 6   ? '#7fcdbb' :
-		           d > 4   ? '#c7e9b4' :
-   		           d > 2   ? '#edf8b1' :
-		                      '#ffffd9';
-		}
+            return d > 18  ? '#08589e ':
+                   d > 15  ? '#2b8cbe ':
+                   d > 12  ? '#4eb3d3 ':
+                   d > 9   ? '#7bccc4 ':
+                   d > 6   ? '#a8ddb5 ':
+                   d > 3   ? '#ccebc5 ':
+                   d > 0   ? '#f0f9e8 ':
+                             '#ffffff ';
+        }
+
+        function getOpacity(d) {
+            return d > 0 ? '0.5' : '0';
+        }
 		
      
      	// initialize the map
@@ -42,27 +44,6 @@
 		  [40.689750, -74.011287],
 		  [40.767151, -73.859195]
 		]);
-
-
-		// add layer control
-		function monday() {}
-		function tuesday() {}
-		function wednesday() {}
-		function thursday() {}
-		function friday() {}
-		function saturday() {}
-		function sunday() {}
-				
-		var overlayMaps = {
-		    "1": monday,
-		    "2": tuesday,
-		    "3": wednesday,
-		    "4": thursday,
-		    "5": friday,
-		    "6": saturday,
-		    "7": sunday
-		};
-		L.control.layers(overlayMaps).addTo(map);
     		
     		
     	// add a legend	
@@ -71,7 +52,7 @@
 		legend.onAdd = function (map) {
 
 		    var div = L.DomUtil.create('div', 'info legend'),
-		        grades = [0, 2, 4, 6, 8, 10, 12, 16, 20],
+		        grades = [0, 3, 6, 9, 12, 15, 18],
 		        labels = [];
 		
 		    // loop through our density intervals and generate a label with a colored square for each interval
@@ -90,11 +71,11 @@
 		// style the map, highlight features
 		function style(feature) {
 			return {
-				weight: 1,
+				weight: 0,
 				opacity: 1,
 				color: '#ccc',
 				dashArray: '',
-				fillOpacity: 0.5,
+				fillOpacity: getOpacity(feature.properties['1']*100),
 				fillColor: getColor(feature.properties['1']*100)
 			};
 		}
@@ -121,7 +102,7 @@
 		}
 
 		function zoomToFeature(e) {
-			map.fitBounds(e.target.getBounds());
+//			map.fitBounds(e.target.getBounds());
 		}
 
 		function onEachFeature(feature, layer) {
@@ -130,7 +111,32 @@
 				mouseout: resetHighlight,
 				click: zoomToFeature
 			});
+			layer.bindPopup('<h4>District: ' + feature.properties.nabe + '</h4><br/>Geo name: ' + feature.properties.geoname + '<br/>Tip percentage: ' + Math.round(feature.properties['1'] * 100 * 100) / 100 + '%');
 		}
+		
+		
+		
+		// add layer control
+		function monday() {
+		}
+		function tuesday() {}
+		function wednesday() {}
+		function thursday() {}
+		function friday() {}
+		function saturday() {}
+		function sunday() {}
+				
+		var overlayMaps = {
+		    "1": monday,
+		    "2": tuesday,
+		    "3": wednesday,
+		    "4": thursday,
+		    "5": friday,
+		    "6": saturday,
+		    "7": sunday
+		};
+		L.control.layers(overlayMaps).addTo(map);
+
 
 		geojson = L.geoJson(districtweekdata, {
 			style: style,
