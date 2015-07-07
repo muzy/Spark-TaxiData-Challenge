@@ -117,23 +117,22 @@
 		
 		
 		// add layer control
-		function monday() {
-		}
+		function monday() {}
 		function tuesday() {}
 		function wednesday() {}
 		function thursday() {}
 		function friday() {}
 		function saturday() {}
 		function sunday() {}
-				
+	
 		var overlayMaps = {
-		    "1": monday,
-		    "2": tuesday,
-		    "3": wednesday,
-		    "4": thursday,
-		    "5": friday,
-		    "6": saturday,
-		    "7": sunday
+		    "Monday": monday,
+		    "Tuesday": tuesday,
+		    "Wednesday": wednesday,
+		    "Thursday": thursday,
+		    "Friday": friday,
+		    "Saturday": saturday,
+		    "Sunday": sunday
 		};
 		L.control.layers(overlayMaps).addTo(map);
 
@@ -143,6 +142,7 @@
 			onEachFeature: onEachFeature
 		}).addTo(map);
 
+		
 	</script>
     
     
