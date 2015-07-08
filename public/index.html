@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
     <link rel="stylesheet" href="stylesheets/style.css">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.js"></script>
     <script type="text/javascript" src="district_data_simple_weekdays.js"></script>
   </head>
 
@@ -35,6 +37,49 @@
         function getOpacity(d) {
             return d > 0 ? '0.5' : '0';
         }
+        
+		var dataSet = [
+		    [ 15132, "0-3%" ],
+		    [ 21441, "3-6%" ],
+		    [ 11441, "6-9%" ],
+		    [ 29141, "9-12%" ],
+		    [ 18211, "12-15%" ],
+		    [ 17556, "15-18%" ],
+		    [ 32251, ">18%"]
+		];
+	
+	
+		function plotChart() {
+		    var d1, xaxisLabels = [], i=0;
+		
+		    d1 = dataSet.map(function(elt){return {label: elt[1], data: [[i++, elt[0]]]};});
+		    i = 0;
+		
+		    xaxisLabels = dataSet.map(function(elt) { return [i++, elt[1]]; });
+		    $.plot($(".popup_histogram"),
+	           d1,
+	           {
+	             colors: ['#eee','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#08589e'],
+	             legend: { show: false },
+	             series: {
+	                   bars: {
+	                     show       : true,
+	                     align      : 'center',
+	                     //dataLabels : true,
+	                     barWidth : 1,
+	                     fill:1,
+	                     lineWidth: 0
+	                   }
+	             },
+	             xaxis: { 
+	                 ticks: xaxisLabels,
+	                 tickLength: 0
+	             },
+	             yaxis: {
+	                 tickLength: 0
+	             }
+	           });
+		}
         
         function changeWeekday(weekdayNumber) {
 			map.removeLayer(geojson);
@@ -146,21 +191,41 @@
 		        result = "Sunday";
 		        break;	
 			default:
-				result = "(undefined!)";
+				result = "(undefined)";
 			}
 			
 			return result;
 		}
 		
 		function createPopupText(feature) {
-			var div = L.DomUtil.create('div', '');
-	
+			var div = L.DomUtil.create('div', 'popup');
+
 	        div.innerHTML +=
-				  '<h4>District: ' + feature.properties.nabe + '</h4><br/>'
-				+ 'Geo name: ' + feature.properties.geoname + '<br/>'
-				+ 'geoid: ' + feature.properties['geoid'] + '<br/>'
-				+ 'Weekday: ' + numberToWeekday(styleProperty) + '<br/>'
-				+ 'Tip percentage: ' + Math.round(feature.properties[styleProperty] * 100 * 100) / 100 + '%<br/>'
+	              '<div class="popup_info">'
+		        + '<table>'
+				+ '  <tr>'
+				+ '    <th><h4>District:</h4></th>'
+				+ '    <th><h4>' + feature.properties.nabe + '</h4></th>'
+				+ '  </tr>'
+				+ '  <tr>'
+				+ '    <td>Geo name:</td>'
+				+ '    <td>' + feature.properties.geoname + '</td>'
+				+ '  </tr>'
+				+ '  <tr>'
+				+ '    <td>Geo ID:</td>'
+				+ '    <td>' + feature.properties.geoid + '</td>'
+				+ '  </tr>'
+				+ '  <tr>'
+				+ '    <td>Weekday:</td>'
+				+ '    <td>' + numberToWeekday(styleProperty) + '</td>'
+				+ '  </tr>'
+				+ '  <tr>'
+				+ '    <td>Tip amount:</td>'
+				+ '    <td>' + Math.round(feature.properties[styleProperty] * 100 * 100) / 100 + '%</td>'
+				+ '  </tr>'
+				+ '</table>'
+				+ '</div>'
+				+ '<div class="popup_histogram"></div>'
 			;
 	
 			return div;
@@ -173,7 +238,7 @@
 //				click: zoomToFeature
 			});
 			
-			layer.bindPopup(createPopupText(feature));
+			layer.bindPopup(createPopupText(feature), {maxWidth: '500'});
 		}
 		
 		
@@ -204,6 +269,8 @@
 			style: style,
 			onEachFeature: onEachFeature
 		}).addTo(map);
+		
+		map.on('popupopen', function (e) {plotChart();});
 	</script>
     
   </body>

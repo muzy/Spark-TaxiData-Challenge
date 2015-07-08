@@ -37,3 +37,18 @@ html, body, #map {
     margin-right: 8px;
     opacity: 0.7;
 }
+
+.popup {
+    padding: 6px 8px;
+}
+
+.popup_info {
+	font: 14px/16px Arial, Helvetica, sans-serif;
+}
+
+.popup_histogram {
+	margin: 0 auto;
+	margin-top: 20px;
+	width: 300px;
+	height: 150px;
+}

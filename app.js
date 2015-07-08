@@ -15,7 +15,7 @@ var cfenv = require('cfenv');
 // create a new express server
 var app = express();
 
-app.use(express.compress()); 
+//app.use(express.compress()); 
 // serve the files out of ./public as our main files
 app.use(express.static(__dirname + '/public'));
 
