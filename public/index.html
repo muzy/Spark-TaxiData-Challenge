@@ -16,7 +16,7 @@
   	  </div>
  
      <script>
-   		var map = L.map('map');  
+   		var map = L.map('map', { zoomControl:false });  
 		var geojson;
 		var styleProperty = '1';
 
@@ -35,8 +35,21 @@
         function getOpacity(d) {
             return d > 0 ? '0.5' : '0';
         }
+        
+        function changeWeekday(weekdayNumber) {
+			map.removeLayer(geojson);
+			styleProperty = weekdayNumber;
+			geojson = L.geoJson(districtweekdata, {
+				style: style,
+				onEachFeature: onEachFeature
+			}).addTo(map);
+		}
+
+		function handleWeekdayClick(rb) {
+			changeWeekday(rb.value);
+		}
 		
-    	// add a legend	
+    	// add a legend	in the bottomright corner
     	var legend = L.control({position: 'bottomright'});
 		legend.onAdd = function (map) {
 		    var div = L.DomUtil.create('div', 'info legend'),
@@ -52,6 +65,26 @@
 		
 		    return div;
 		};
+		
+		// add a weekday selector in the topright corner
+		var weekday_select = L.control({position: 'topright'});
+		weekday_select.onAdd = function (map) {
+		    var div = L.DomUtil.create('div', 'info');
+		
+		        div.innerHTML +=
+		              '<input type="radio" name="weekDayRB" onclick="handleWeekdayClick(this)" value="1" checked="checked">Monday</input>'
+		            + '<input type="radio" name="weekDayRB" onclick="handleWeekdayClick(this)" value="2">Tuesday</input>'
+		            + '<input type="radio" name="weekDayRB" onclick="handleWeekdayClick(this)" value="3">Wednesday</input>'
+		            + '<input type="radio" name="weekDayRB" onclick="handleWeekdayClick(this)" value="4">Thursday</input>'
+		            + '<input type="radio" name="weekDayRB" onclick="handleWeekdayClick(this)" value="5">Friday</input>'
+		            + '<input type="radio" name="weekDayRB" onclick="handleWeekdayClick(this)" value="6">Saturday</input>'
+		            + '<input type="radio" name="weekDayRB" onclick="handleWeekdayClick(this)" value="7">Sunday</input>'
+				;
+		
+		    return div;
+		};
+		
+		var zoom = L.control.zoom({ position: 'bottomleft' })
 		
 		// style the map, highlight features
 		function style(feature) {
@@ -96,43 +129,14 @@
 				mouseout: resetHighlight,
 //				click: zoomToFeature
 			});
-			layer.bindPopup('<h4>District: ' + feature.properties.nabe + '</h4><br/>Geo name: ' + feature.properties.geoname + '<br/>Tip percentage: ' + Math.round(feature.properties[styleProperty] * 100 * 100) / 100 + '%<br/>mon: ' + feature.properties['1'] + '<br/>tue: ' + feature.properties['2']);
+			layer.bindPopup('<h4>District: ' + feature.properties.nabe + '</h4><br/>'
+							+ 'Geo name: ' + feature.properties.geoname + '<br/>'
+							+ 'geoid: ' + feature.properties['geoid'] + '<br/>'
+							+ 'Tip percentage: ' + Math.round(feature.properties[styleProperty] * 100 * 100) / 100 + '%<br/>'
+							+ 'mon: ' + feature.properties['1'] + '<br/>'
+							+ 'tue: ' + feature.properties['2'] + '<br/>');
 		}
 		
-		
-		
-		// add layer control
-		function monday() {
-
-		}
-		function tuesday() {
-
-		}
-		function wednesday() {
-
-		}
-		function thursday() {
-
-		}
-		function friday() {
-
-		}
-		function saturday() {
-
-		}
-		function sunday() {
-
-		}
-	
-		var overlayMaps = {
-		    "Monday": monday,
-		    "Tuesday": tuesday,
-		    "Wednesday": wednesday,
-		    "Thursday": thursday,
-		    "Friday": friday,
-		    "Saturday": saturday,
-		    "Sunday": sunday
-		};
 		
 		
 		
@@ -151,24 +155,16 @@
 		// add legend
 		legend.addTo(map);
 		
-		// add overlay control
-		L.control.layers(overlayMaps).addTo(map);
+		// add weekday control
+		weekday_select.addTo(map);
+		
+		// add zoom control at bottomleft
+		zoom.addTo(map);
 
 		geojson = L.geoJson(districtweekdata, {
 			style: style,
 			onEachFeature: onEachFeature
 		}).addTo(map);
-
-// map.on('overayAt', <func>)
-
-/*
-		map.removeLayer(geojson);
-		styleProperty = '2';
-		geojson = L.geoJson(districtweekdata, {
-			style: style,
-			onEachFeature: onEachFeature
-		}).addTo(map);
-*/
 	</script>
     
     
