@@ -53,8 +53,7 @@
     	var legend = L.control({position: 'bottomright'});
 		legend.onAdd = function (map) {
 		    var div = L.DomUtil.create('div', 'info legend'),
-		        grades = [0, 3, 6, 9, 12, 15, 18],
-		        labels = [];
+		        grades = [0, 3, 6, 9, 12, 15, 18];
 		
 		    // loop through our density intervals and generate a label with a colored square for each interval
 		    for (var i = 0; i < grades.length; i++) {
@@ -84,7 +83,7 @@
 		    return div;
 		};
 		
-		var zoom = L.control.zoom({ position: 'bottomleft' })
+		var zoom = L.control.zoom({ position: 'bottomleft' });
 		
 		// style the map, highlight features
 		function style(feature) {
@@ -122,6 +121,50 @@
 		function zoomToFeature(e) {
 			map.fitBounds(e.target.getBounds());
 		}
+		
+		function numberToWeekday(num) {
+			switch(parseInt(num)) {
+			case 1:
+		        result = "Monday";
+		        break;
+			case 2:
+		        result = "Tuesday";
+		        break;
+   			case 3:
+		        result = "Wednesday";
+		        break;
+			case 4:
+		        result = "Thursday";
+		        break;
+			case 5:
+		        result = "Friday";
+		        break;
+			case 6:
+		        result = "Saturday";
+		        break;
+			case 7:
+		        result = "Sunday";
+		        break;	
+			default:
+				result = "(undefined!)";
+			}
+			
+			return result;
+		}
+		
+		function createPopupText(feature) {
+			var div = L.DomUtil.create('div', '');
+	
+	        div.innerHTML +=
+				  '<h4>District: ' + feature.properties.nabe + '</h4><br/>'
+				+ 'Geo name: ' + feature.properties.geoname + '<br/>'
+				+ 'geoid: ' + feature.properties['geoid'] + '<br/>'
+				+ 'Weekday: ' + numberToWeekday(styleProperty) + '<br/>'
+				+ 'Tip percentage: ' + Math.round(feature.properties[styleProperty] * 100 * 100) / 100 + '%<br/>'
+			;
+	
+			return div;
+		}
 
 		function onEachFeature(feature, layer) {
 			layer.on({
@@ -129,12 +172,8 @@
 				mouseout: resetHighlight,
 //				click: zoomToFeature
 			});
-			layer.bindPopup('<h4>District: ' + feature.properties.nabe + '</h4><br/>'
-							+ 'Geo name: ' + feature.properties.geoname + '<br/>'
-							+ 'geoid: ' + feature.properties['geoid'] + '<br/>'
-							+ 'Tip percentage: ' + Math.round(feature.properties[styleProperty] * 100 * 100) / 100 + '%<br/>'
-							+ 'mon: ' + feature.properties['1'] + '<br/>'
-							+ 'tue: ' + feature.properties['2'] + '<br/>');
+			
+			layer.bindPopup(createPopupText(feature));
 		}
 		
 		
@@ -166,7 +205,6 @@
 			onEachFeature: onEachFeature
 		}).addTo(map);
 	</script>
-    
     
   </body>
 
