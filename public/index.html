@@ -21,7 +21,6 @@
    		var map = L.map('map', { zoomControl:false });  
 		var geojson;
 		var styleProperty = '1';
-
      
 		function getColor(d) {
             return d > 18  ? '#08589e ':
@@ -38,51 +37,68 @@
             return d > 0 ? '0.5' : '0';
         }
         
-		var dataSet = [
-		    [ 15132, "0-3%" ],
-		    [ 21441, "3-6%" ],
-		    [ 11441, "6-9%" ],
-		    [ 29141, "9-12%" ],
-		    [ 18211, "12-15%" ],
-		    [ 17556, "15-18%" ],
-		    [ 32251, ">18%"]
+		var labels = [
+		    [ "0-3%" ],
+		    [ "3-6%" ],
+		    [ "6-9%" ],
+		    [ "9-12%" ],
+		    [ "12-15%" ],
+		    [ "15-18%" ],
+		    [ ">18%"]
 		];
 	
 	
-		function plotChart() {
-		    var d1, xaxisLabels = [], i=0;
-		
-		    d1 = dataSet.map(function(elt){return {label: elt[1], data: [[i++, elt[0]]]};});
-		    i = 0;
-		
-		    xaxisLabels = dataSet.map(function(elt) { return [i++, elt[1]]; });
-		    $.plot($(".popup_histogram"),
-	           d1,
-	           {
-	             colors: ['#eee','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#08589e'],
-	             legend: { show: false },
-	             series: {
-	                   bars: {
-	                     show       : true,
-	                     align      : 'center',
-	                     //dataLabels : true,
-	                     barWidth : 1,
-	                     fill:1,
-	                     //lineWidth: 0
-	                   }
-	             },
-	             xaxis: { 
-	                 ticks: xaxisLabels,
-	                 tickLength: 0
-	             },
-	             yaxis: {
-	                 tickLength: 0
-	             },
-	             grid: {
-	             	hoverable: true,
-               		borderWidth: 2
-	             }
-	           });
+		function plotChart(e) {
+			//console.log(e);
+			console.log(e.popup._source.feature.properties.geoid);
+			var geoid = e.popup._source.feature.properties.geoid
+			var data;
+
+			$.getJSON( "geohist/"+geoid+".json", function( json ) {
+		      	data = json;
+			  	console.log( json );
+			  	console.log(styleProperty)
+			    d1 = [];
+			    xaxisLabels = [];
+			    var i=0;
+			
+				for (i=0; i<labels.length; i++) {
+					d1[i] = {label: labels[i], data: [[i, data[styleProperty][i]]]};
+					xaxisLabels[i] = [i,labels[i]];
+				}	
+
+				console.log(d1);
+				console.log(xaxisLabels);
+			    
+			    $.plot($(".popup_histogram"),
+		           d1,
+		           {
+		             colors: ['#eee','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#08589e'],
+		             legend: { show: false },
+		             series: {
+		                   bars: {
+		                     show       : true,
+		                     align      : 'center',
+		                     //dataLabels : true,
+		                     barWidth : 1,
+		                     fill:1,
+		                     //lineWidth: 0
+		                   }
+		             },
+		             xaxis: { 
+		                 ticks: xaxisLabels,
+		                 tickLength: 0
+		             },
+		             yaxis: {
+		                 tickLength: 0
+		             },
+		             grid: {
+		             	hoverable: true,
+	               		borderWidth: 2
+		             }
+		           });
+			});
+
 		}
         
         function changeWeekday(weekdayNumber) {
@@ -274,7 +290,7 @@
 			onEachFeature: onEachFeature
 		}).addTo(map);
 		
-		map.on('popupopen', function (e) {plotChart();});
+		map.on('popupopen', function (e) {plotChart(e);});
 	</script>
     
   </body>
