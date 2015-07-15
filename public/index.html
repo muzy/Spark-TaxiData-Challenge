@@ -50,14 +50,17 @@
 	
 		function plotChart(e) {
 			//console.log(e);
-			console.log(e.popup._source.feature.properties.geoid);
-			var geoid = e.popup._source.feature.properties.geoid
+			console.log(e.popup._source);
+			//console.log(e.target._popup._contentNode);
+			var geoid = $($.parseHTML(e.target._popup._contentNode.innerHTML)).find("#geoid").text();
+			//console.log(e.popup._source.feature.properties.geoid);
+			//var geoid = e.popup._source.feature.properties.geoid
 			var data;
 
 			$.getJSON( "geohist/"+geoid+".json", function( json ) {
 		      	data = json;
-			  	console.log( json );
-			  	console.log(styleProperty)
+			  	//console.log( json );
+			  	//console.log(styleProperty)
 			    d1 = [];
 			    xaxisLabels = [];
 			    driveCount = 0;
@@ -69,9 +72,11 @@
 					xaxisLabels[i] = [i,labels[i]];
 				}	
 
+
 				console.log(driveCount)
 				console.log(d1);
 				console.log(xaxisLabels);
+
 			    
 			    $("#drive_count").html(driveCount);
 			    $.plot($(".popup_histogram"),
@@ -237,7 +242,7 @@
 				+ '  </tr>'
 				+ '  <tr>'
 				+ '    <td>Geo ID:</td>'
-				+ '    <td>' + feature.properties.geoid + '</td>'
+				+ '    <td id="geoid">' + feature.properties.geoid + '</td>'
 				+ '  </tr>'
 				+ '  <tr>'
 				+ '    <td>Weekday:</td>'
