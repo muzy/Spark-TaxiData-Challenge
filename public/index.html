@@ -60,16 +60,20 @@
 			  	console.log(styleProperty)
 			    d1 = [];
 			    xaxisLabels = [];
+			    driveCount = 0;
 			    var i=0;
 			
 				for (i=0; i<labels.length; i++) {
 					d1[i] = {label: labels[i], data: [[i, data[styleProperty][i]]]};
+					driveCount += data[styleProperty][i];
 					xaxisLabels[i] = [i,labels[i]];
 				}	
 
+				console.log(driveCount)
 				console.log(d1);
 				console.log(xaxisLabels);
 			    
+			    $("#drive_count").html(driveCount);
 			    $.plot($(".popup_histogram"),
 		           d1,
 		           {
@@ -240,8 +244,12 @@
 				+ '    <td>' + numberToWeekday(styleProperty) + '</td>'
 				+ '  </tr>'
 				+ '  <tr>'
-				+ '    <td>Tip amount:</td>'
+				+ '    <td>Average Tip:</td>'
 				+ '    <td>' + Math.round(feature.properties[styleProperty] * 100 * 100) / 100 + '%</td>'
+				+ '  </tr>'
+				+ '  <tr>'
+				+ '    <td>Drive Count:</td>'
+				+ '    <td id="drive_count"></td>'
 				+ '  </tr>'
 				+ '</table>'
 				+ '</div>'
